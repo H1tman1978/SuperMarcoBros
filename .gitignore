@@ -1,0 +1,92 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# PyCharm specific files
+.idea/
+*.iml
+*.iws
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VS Code workspace files
+.vscode/
+
+# MacOS specific files
+.DS_Store
+
+# Pygame specific assets or binary outputs
+*.mp3
+*.ogg
+*.png
+*.jpg
+*.jpeg
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+
+# Ignore level design files
+levels/*.json
+
+# Ignore Python wheels
+*.whl
+
+# Ignore test coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+*.cover
+*.py,cover
+.hypothesis/
+
+# Ignore mypy type check output
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Pytest cache
+.pytest_cache/
