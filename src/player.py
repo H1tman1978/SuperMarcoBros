@@ -4,7 +4,7 @@ Handles player character logic (Marco and Luca) in Super Marco Bros.
 """
 
 import pygame
-from src.settings import PLAYER_SPEED, JUMP_HEIGHT, GRAVITY, WIDTH, HEIGHT, SKY_BLUE
+from settings import PLAYER_SPEED, JUMP_HEIGHT, GRAVITY, WIDTH, HEIGHT
 
 
 class Player(pygame.sprite.Sprite):
@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         # Load player image or create a placeholder
         self.image = pygame.Surface((50, 50))  # Placeholder for the player sprite (50x50 px)
-        self.image.fill((255, 0, 0))  # Fill with red color for now (will replace with actual sprite)
+        self.image.fill((255, 0, 0))           # Fill with red color for now (will replace with actual sprite)
         self.rect = self.image.get_rect()
 
         # Player position and movement attributes
@@ -27,16 +27,16 @@ class Player(pygame.sprite.Sprite):
         """Handle player input for movement and jumping."""
         keys = pygame.key.get_pressed()
 
-        # Horizontal movement
-        if keys[pygame.K_LEFT]:
+        # Horizontal movement (Arrow keys and WSAD)
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.velocity_x = -PLAYER_SPEED
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.velocity_x = PLAYER_SPEED
         else:
             self.velocity_x = 0
 
-        # Jumping
-        if keys[pygame.K_SPACE] and not self.is_jumping:
+        # Jumping (Space or W key)
+        if (keys[pygame.K_SPACE] or keys[pygame.K_w]) and not self.is_jumping:
             self.velocity_y = -JUMP_HEIGHT
             self.is_jumping = True
 
@@ -66,4 +66,3 @@ class Player(pygame.sprite.Sprite):
     def draw(self, surface):
         """Draw the player character to the screen."""
         surface.blit(self.image, self.rect)
-
