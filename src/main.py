@@ -7,6 +7,9 @@ import pygame
 import sys
 from settings import WIDTH, HEIGHT, FPS, SKY_BLUE
 from player import Player
+from platform import Platform
+from enemy import Enemy
+from item import Item
 
 # Initialize PyGame
 pygame.init()
@@ -21,9 +24,30 @@ clock = pygame.time.Clock()
 # Create player instance
 player = Player()
 
-# Sprite group for easier management (if more objects are added later)
+# Create platforms
+platforms = pygame.sprite.Group()
+platform1 = Platform(100, HEIGHT - 100, 200, 20)
+platform2 = Platform(400, HEIGHT - 200, 200, 20)
+platform3 = Platform(600, HEIGHT - 150, 200, 20)
+platforms.add(platform1, platform2, platform3)
+
+# Create enemies
+enemies = pygame.sprite.Group()
+enemy1 = Enemy(200, HEIGHT - 100, 50, 50, 2)
+enemy2 = Enemy(500, HEIGHT - 150, 50, 50, 2)
+enemies.add(enemy1, enemy2)
+
+# Create items (bad shroom)
+items = pygame.sprite.Group()
+bad_shroom = Item(300, HEIGHT - 300, 30, 30)
+items.add(bad_shroom)
+
+# Sprite group for easier management
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
+all_sprites.add(platforms)
+all_sprites.add(enemies)
+all_sprites.add(items)
 
 
 def main():
