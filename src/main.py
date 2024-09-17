@@ -50,6 +50,26 @@ all_sprites.add(enemies)
 all_sprites.add(items)
 
 
+def check_collisions():
+    """Handle collisions with platforms, enemies, and items."""
+    # Player-platform collision
+    player.update(platforms)
+
+    # Player-enemy collision
+    enemy_collision = pygame.sprite.spritecollide(player, enemies, False)
+    if enemy_collision:
+        if player.velocity_y > 0:  # Player is falling (jumping on enemy)
+            enemy_collision[0].kill()  # Defeat enemy
+        else:
+            print("Player hit by enemy!")  # Placeholder for player damage
+
+    # Player-item collision (bad shroom)
+    item_collision = pygame.sprite.spritecollide(player, items, True)
+    if item_collision:
+        print("Bad shroom collected!")  # Placeholder for bad shroom effect
+        player.reverse_controls()  # Reverse controls for the player (to be implemented)
+
+
 def main():
     """Main game loop."""
     running = True
@@ -61,6 +81,9 @@ def main():
 
         # Update game state (player, enemies, etc.)
         all_sprites.update()
+
+        # Check for collisions
+        check_collisions()
 
         # Drawing code
         screen.fill(SKY_BLUE)  # Fill the background with sky blue color
