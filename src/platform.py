@@ -4,7 +4,8 @@ Handles platform logic for Super Marco Bros.
 """
 
 import pygame
-from src.settings import WIDTH, HEIGHT, GREEN
+
+from settings import GREEN
 
 
 class Platform(pygame.sprite.Sprite):

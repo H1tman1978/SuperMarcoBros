@@ -51,9 +51,14 @@ all_sprites.add(items)
 
 
 def check_collisions():
-    """Handle collisions with platforms, enemies, and items."""
+    """Handle all collisions in the game."""
     # Player-platform collision
-    player.update(platforms)
+    platform_collisions = pygame.sprite.spritecollide(player, platforms, False)
+    if platform_collisions:
+        if player.velocity_y > 0:  # If the player is falling
+            player.rect.bottom = platform_collisions[0].rect.top
+            player.velocity_y = 0
+            player.is_jumping = False
 
     # Player-enemy collision
     enemy_collision = pygame.sprite.spritecollide(player, enemies, False)
@@ -67,7 +72,7 @@ def check_collisions():
     item_collision = pygame.sprite.spritecollide(player, items, True)
     if item_collision:
         print("Bad shroom collected!")  # Placeholder for bad shroom effect
-        player.reverse_controls()  # Reverse controls for the player (to be implemented)
+        player.reverse_controls()  # Reverse controls for the player
 
 
 def main():

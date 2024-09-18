@@ -4,7 +4,7 @@ Handles enemy logic for Super Marco Bros.
 """
 
 import pygame
-from src.settings import WIDTH, RED
+from settings import WIDTH, RED
 
 
 class Enemy(pygame.sprite.Sprite):

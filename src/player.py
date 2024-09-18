@@ -78,15 +78,6 @@ class Player(pygame.sprite.Sprite):
         # Apply gravity
         self.apply_gravity()
 
-        # Check for collisions with platforms
-        platform_collisions = pygame.sprite.spritecollide(self, platforms, False)
-        if platform_collisions:
-            # If falling, stop falling and stand on the platform
-            if self.velocity_y > 0:
-                self.rect.bottom = platform_collisions[0].rect.top
-                self.velocity_y = 0
-                self.is_jumping = False
-
     def draw(self, surface):
         """Draw the player character to the screen."""
         surface.blit(self.image, self.rect)

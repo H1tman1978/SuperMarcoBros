@@ -4,7 +4,7 @@ Handles item logic (including the "bad shroom") for Super Marco Bros.
 """
 
 import pygame
-from src.settings import BLUE
+from settings import BLUE
 
 
 class Item(pygame.sprite.Sprite):
