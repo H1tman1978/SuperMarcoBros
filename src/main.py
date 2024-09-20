@@ -7,7 +7,7 @@ import pygame
 import sys
 from settings import WIDTH, HEIGHT, FPS, SKY_BLUE
 from player import Player
-from platform import Platform
+from platform_blocks import Platform
 from enemy import Enemy
 from item import Item
 
