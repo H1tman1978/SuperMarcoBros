@@ -8,25 +8,28 @@ from settings import PLAYER_SPEED, JUMP_HEIGHT, GRAVITY, WIDTH, HEIGHT
 
 
 class Player(pygame.sprite.Sprite):
-    """Represents the player character (Marco) in the game."""
+    """Represents the player character in the game."""
 
-    def __init__(self):
+    def __init__(self, sprite_image, x, y):
         super().__init__()
-        # Load player image or create a placeholder
-        self.image = pygame.Surface((50, 50))  # Placeholder for the player sprite (50x50 px)
-        self.image.fill((255, 0, 0))           # Fill with red color for now (will replace with actual sprite)
+        self.image = sprite_image  # Assign the sprite image
         self.rect = self.image.get_rect()
 
-        # Player position and movement attributes
-        self.rect.center = (WIDTH // 2, HEIGHT - 100)  # Start near the bottom of the screen
-        self.velocity_x = 0  # Speed along the x-axis
-        self.velocity_y = 0  # Speed along the y-axis (for jumping/falling)
+        # Set player's starting position
+        self.rect.x = x
+        self.rect.y = y
+
+        # Player movement attributes
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.is_jumping = False
+
+        # Reverse control attributes
         self.controls_reversed = False
         self.reverse_timer = 0
 
     def reverse_controls(self):
-        """Reverse player controls for 5 seconds."""
+        """Reverse player controls for 5 seconds when eating a bad shroom."""
         self.controls_reversed = True
         self.reverse_timer = pygame.time.get_ticks() + 5000  # Reverse for 5 seconds
 
@@ -40,15 +43,15 @@ class Player(pygame.sprite.Sprite):
 
         # Horizontal movement (Arrow keys and WSAD)
         if keys[left_key] or keys[pygame.K_a]:
-            self.velocity_x = -PLAYER_SPEED
+            self.velocity_x = -5
         elif keys[right_key] or keys[pygame.K_d]:
-            self.velocity_x = PLAYER_SPEED
+            self.velocity_x = 5
         else:
             self.velocity_x = 0
 
         # Jumping (Space or W key)
         if (keys[pygame.K_SPACE] or keys[pygame.K_w]) and not self.is_jumping:
-            self.velocity_y = -JUMP_HEIGHT
+            self.velocity_y = -10
             self.is_jumping = True
 
         # Reset controls after 5 seconds
@@ -56,28 +59,16 @@ class Player(pygame.sprite.Sprite):
             self.controls_reversed = False
 
     def apply_gravity(self):
-        """Apply gravity to the player to simulate falling and jumping behavior."""
-        self.velocity_y += GRAVITY
-        if self.rect.bottom >= HEIGHT - 50:  # Simulate ground collision
+        """Apply gravity to the player."""
+        self.velocity_y += 1
+        if self.rect.bottom >= HEIGHT - 50:
             self.rect.bottom = HEIGHT - 50
             self.velocity_y = 0
             self.is_jumping = False
 
     def update(self):
         """Update the player's position and apply movement logic."""
-        self.handle_input()  # Process user input
-        self.rect.x += self.velocity_x  # Move left/right
-        self.rect.y += self.velocity_y  # Move up/down (jumping/falling)
-
-        # Keep the player within the screen bounds
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.right > WIDTH:
-            self.rect.right = WIDTH
-
-        # Apply gravity
+        self.handle_input()
+        self.rect.x += self.velocity_x
+        self.rect.y += self.velocity_y
         self.apply_gravity()
-
-    def draw(self, surface):
-        """Draw the player character to the screen."""
-        surface.blit(self.image, self.rect)

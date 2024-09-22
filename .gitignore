@@ -53,13 +53,6 @@ env/
 # MacOS specific files
 .DS_Store
 
-# Pygame specific assets or binary outputs
-*.mp3
-*.ogg
-*.png
-*.jpg
-*.jpeg
-
 # Logs and temp files
 *.log
 *.tmp

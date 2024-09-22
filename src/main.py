@@ -5,14 +5,42 @@ Entry point for Super Marco Bros game using PyGame.
 
 import pygame
 import sys
-from settings import WIDTH, HEIGHT, FPS, SKY_BLUE
+from settings import BACKGROUND_IMAGE, WIDTH, HEIGHT, FPS, SKY_BLUE, SPRITESHEETS_LIST
 from player import Player
 from platform_blocks import Platform
 from enemy import Enemy
 from item import Item
+from sprite_loader import load_sprites_from_xml
 
 # Initialize PyGame
 pygame.init()
+
+# Set up the game window
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Super Marco Bros")
+
+# Load background image
+background = pygame.image.load(BACKGROUND_IMAGE).convert()
+
+# Calculate the blit position to align the bottom-left of the image with the bottom-left of the screen
+background_x = 0  # No shift on the x-axis
+background_y = 600 - 1024  # Align bottom of the image with the bottom of the screen
+
+# Load spritesheet images
+sprites = {}
+for sheet in SPRITESHEETS_LIST:
+    image_path = sheet['image']
+    xml_path = sheet['xml']
+
+    # Load the sprite sheet image
+    print(image_path, xml_path)
+    spritesheet_image = pygame.image.load(image_path).convert_alpha()
+
+    # Load sprites from the corresponding XML file
+    sprite_data = load_sprites_from_xml(xml_path, spritesheet_image)
+
+    # Store the loaded sprite data in the main sprites dictionary
+    sprites.update(sprite_data)
 
 # Set up the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -22,7 +50,8 @@ pygame.display.set_caption("Super Marco Bros")
 clock = pygame.time.Clock()
 
 # Create player instance
-player = Player()
+player_sprite = sprites['marco_front']
+player = Player(player_sprite, 100, 100)
 
 # Create platforms
 platforms = pygame.sprite.Group()
@@ -84,14 +113,14 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+        # Draw the background first
+        screen.blit(background, (background_x, background_y))
+
         # Update game state (player, enemies, etc.)
         all_sprites.update()
 
         # Check for collisions
         check_collisions()
-
-        # Drawing code
-        screen.fill(SKY_BLUE)  # Fill the background with sky blue color
 
         # Draw all sprites (player, etc.)
         all_sprites.draw(screen)
