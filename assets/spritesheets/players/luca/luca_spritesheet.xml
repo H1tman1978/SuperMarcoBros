@@ -1,18 +1,18 @@
 <TextureAtlas imagePath="luca_spritesheet.png">
-    <SubTexture name="luca_duck.png" x="365" y="98" width="69" height="71"/>
-    <SubTexture name="luca_front.png" x="0" y="196" width="66" height="92"/>
-    <SubTexture name="luca_hurt.png" x="438" y="0" width="69" height="92"/>
-    <SubTexture name="luca_jump.png" x="438" y="93" width="67" height="94"/>
-    <SubTexture name="luca_stand.png" x="67" y="196" width="66" height="92"/>
-    <SubTexture name="luca_walk01.png" x="0" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk02.png" x="73" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk03.png" x="146" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk04.png" x="0" y="98" width="72" height="97"/>
-    <SubTexture name="luca_walk05.png" x="73" y="98" width="72" height="97"/>
-    <SubTexture name="luca_walk06.png" x="146" y="98" width="72" height="97"/>
-    <SubTexture name="luca_walk07.png" x="219" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk08.png" x="292" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk09.png" x="219" y="98" width="72" height="97"/>
-    <SubTexture name="luca_walk10.png" x="365" y="0" width="72" height="97"/>
-    <SubTexture name="luca_walk11.png" x="292" y="98" width="72" height="97"/>
+    <SubTexture name="luca_duck" x="365" y="98" width="69" height="71"/>
+    <SubTexture name="luca_front" x="0" y="196" width="66" height="92"/>
+    <SubTexture name="luca_hurt" x="438" y="0" width="69" height="92"/>
+    <SubTexture name="luca_jump" x="438" y="93" width="67" height="94"/>
+    <SubTexture name="luca_stand" x="67" y="196" width="66" height="92"/>
+    <SubTexture name="luca_walk01" x="0" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk02" x="73" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk03" x="146" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk04" x="0" y="98" width="72" height="97"/>
+    <SubTexture name="luca_walk05" x="73" y="98" width="72" height="97"/>
+    <SubTexture name="luca_walk06" x="146" y="98" width="72" height="97"/>
+    <SubTexture name="luca_walk07" x="219" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk08" x="292" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk09" x="219" y="98" width="72" height="97"/>
+    <SubTexture name="luca_walk10" x="365" y="0" width="72" height="97"/>
+    <SubTexture name="luca_walk11" x="292" y="98" width="72" height="97"/>
 </TextureAtlas>
