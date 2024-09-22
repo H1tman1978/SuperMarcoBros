@@ -10,12 +10,14 @@ from settings import PLAYER_SPEED, JUMP_HEIGHT, GRAVITY, WIDTH, HEIGHT
 class Player(pygame.sprite.Sprite):
     """Represents the player character with animation support."""
 
-    def __init__(self, frames, x, y, frame_duration=200):
+    def __init__(self, frames, x, y, frame_duration=200, level_width=0, level_height=0):
         """
         :param frames: Dictionary of lists for different animation frames (e.g., 'walk_left', 'walk_right', etc.).
         :param x: Initial x position.
         :param y: Initial y position.
         :param frame_duration: Time in milliseconds for each frame.
+        :param level_width: Width of current level. Used in update method to keep player on screen.
+        :param level_height: Height of current level.
         """
         super().__init__()
 
@@ -42,6 +44,10 @@ class Player(pygame.sprite.Sprite):
         self.current_frame = 0
         self.last_updated = pygame.time.get_ticks()
         self.current_animation = 'idle_right'  # Default animation
+
+        # Store the level width
+        self.level_width = level_width
+        self.level_height = level_height
 
     def reverse_controls(self):
         """Reverse player controls for 5 seconds when eating a bad shroom."""
@@ -112,5 +118,5 @@ class Player(pygame.sprite.Sprite):
         # Ensure the player doesn't move out of bounds
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.right > WIDTH:
-            self.rect.right = WIDTH
+        if self.rect.right > self.level_width:
+            self.rect.right = self.level_width

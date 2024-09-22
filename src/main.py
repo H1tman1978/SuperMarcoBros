@@ -7,6 +7,7 @@ import sys
 import pygame
 from menu import show_start_menu
 from settings import BACKGROUND_IMAGE, FPS, HEIGHT, WIDTH
+from camera import Camera
 from src.animations import luca_animations, marco_animations
 from src.enemy import Enemy
 from src.item import Item
@@ -32,8 +33,119 @@ items = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 
 
+def celebration():
+    """Handles the celebration after the player wins the level."""
+    celebration_running = True
+    celebration_start_time = pygame.time.get_ticks()
+
+    # Simple celebration animation (like flashing text)
+    while celebration_running:
+        screen.fill((0, 0, 0))  # Fill the screen with black
+
+        # Show "Level Complete" message
+        font = pygame.font.Font(None, 74)
+        text = font.render("Level Complete!", True, (255, 255, 0))
+        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 2 - text.get_height() // 2))
+
+        # Celebration runs for 3 seconds before transitioning to end credits
+        if pygame.time.get_ticks() - celebration_start_time > 3000:
+            celebration_running = False
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    show_end_credits()
+
+
+def show_end_credits():
+    """Displays end credits after the celebration."""
+    credits_running = True
+    credits_text = [
+        "Thanks for Playing!",
+        "Created by Anthony Rolfe",
+        "",
+        "Music by Telaron and HorrorPen",
+        "",
+        "Graphics by",
+        "Kenney Vleugels (www.kenney.nl)",
+        "and Anthony Rolfe",
+        "",
+        "Lead Coding by Anthony Rolfe",
+        "",
+        "Additional Coding by",
+        "chatGPT and JetBrains AI Assistant"
+    ]
+
+    # Set the starting position for scrolling credits
+    y_offset = HEIGHT
+
+    while credits_running:
+        screen.fill((0, 0, 0))  # Clear the screen with black
+
+        # Draw each line of the credits text
+        font = pygame.font.Font(None, 48)
+        for i, line in enumerate(credits_text):
+            text = font.render(line, True, (255, 255, 255))
+            screen.blit(text, (WIDTH // 2 - text.get_width() // 2, y_offset + i * 60))
+
+        y_offset -= 2  # Scroll the text upwards
+
+        # Allow the player to skip the credits by pressing the spacebar
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    credits_running = False
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    # Allow the player to exit or restart the game after credits
+    show_restart_screen()
+
+
+def show_restart_screen():
+    """Shows a screen that allows the player to restart the game or exit."""
+    restart_running = True
+    while restart_running:
+        screen.fill((0, 0, 0))  # Clear the screen with black
+
+        # Display restart/exit options
+        font = pygame.font.Font(None, 74)
+        text_restart = font.render("Press R to Restart", True, (255, 255, 255))
+        text_exit = font.render("Press Q to Quit", True, (255, 255, 255))
+        screen.blit(text_restart, (WIDTH // 2 - text_restart.get_width() // 2, HEIGHT // 2 - 50))
+        screen.blit(text_exit, (WIDTH // 2 - text_exit.get_width() // 2, HEIGHT // 2 + 50))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    restart_running = False
+                    main()  # Restart the game by calling the main function
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+
+
+def check_for_win():
+    """Check if all enemies are killed, and if so, trigger the celebration."""
+    if len(enemies) == 0:  # If the enemies group is empty
+        celebration()
+
+
 def load_level(player_selection, level_data, sprites, platforms, enemies, items, all_sprites):
     """Creates the level based on the provided map data."""
+
+    # Calculate the total level width
+    level_width = len(level_data['layout'][0]) * 32
+    level_height = len(level_data['layout']) * 32
 
     # Load background image
     background_img = pygame.image.load(level_data['background_img']).convert()
@@ -55,16 +167,16 @@ def load_level(player_selection, level_data, sprites, platforms, enemies, items,
 
                 case 'P':
                     if player_selection == 'Marco':
-                        player = Player(marco_animations, x, y)
+                        player = Player(marco_animations, x, y, level_width, level_height)
                     else:
-                        player = Player(luca_animations, x, y)
+                        player = Player(luca_animations, x, y, level_width, level_height)
                     all_sprites.add(player)
 
                 case 'E':
                     enemy_type = level_data['enemy_types'][char]
                     if enemy_type == 'slime':
                         from animations import slime_enemy_animations
-                        enemy = Enemy(slime_enemy_animations, x, y, 10, 50)
+                        enemy = Enemy(slime_enemy_animations, x, y, 5, 200, platforms)
                         enemies.add(enemy)
                         all_sprites.add(enemy)
 
@@ -78,7 +190,12 @@ def load_level(player_selection, level_data, sprites, platforms, enemies, items,
                 case _:
                     pass
 
-    return background_img, player
+    # Set up the camera for this level (width and height should match the map's size)
+    level_width = len(level_data['layout'][0]) * 32
+    level_height = len(level_data['layout']) * 32
+    camera = Camera(level_width, level_height)
+
+    return background_img, player, camera
 
 
 def check_collisions(player):
@@ -112,19 +229,24 @@ def main():
     # Load level once after character selection
     background_img = None
     player = None
+    camera = None
 
     while game_running:
         if show_menu:
             selected_character = show_start_menu(screen)
             if selected_character is not None:
                 show_menu = False
-                background_img, player = load_level(selected_character, level1_map, sprites, platforms, enemies, items,
-                                                    all_sprites)
+                background_img, player, camera = load_level(selected_character, level1_map, sprites, platforms, enemies,
+                                                            items,
+                                                            all_sprites)
 
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_running = False
+
+        # Update the camera to follow the player
+        camera.update(player)
 
         # Clear the screen by drawing the background first
         screen.blit(background_img, (0, 0))
@@ -135,8 +257,12 @@ def main():
         # Check for collisions
         check_collisions(player)
 
-        # Draw all sprites (player, etc.)
-        all_sprites.draw(screen)
+        # Draw all sprites with the camera applied
+        for sprite in all_sprites:
+            screen.blit(sprite.image, camera.apply(sprite))
+
+        # Check if all enemies are defeated
+        check_for_win()
 
         # Update the display
         pygame.display.flip()

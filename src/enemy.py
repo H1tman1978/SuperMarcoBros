@@ -60,12 +60,20 @@ class Enemy(pygame.sprite.Sprite):
         bottom_left = self.rect.bottomleft
         bottom_right = self.rect.bottomright
 
+        # Define a small buffer to ensure the enemy doesn't reverse prematurely on small gaps
+        buffer = 2
+
         # Assume the enemy is not on a platform until checked
         on_platform = False
 
+        # Expand the area of the check slightly to catch small platform gaps or edges
+        bottom_left_with_buffer = (bottom_left[0] - buffer, bottom_left[1])
+        bottom_right_with_buffer = (bottom_right[0] + buffer, bottom_right[1])
+
         # Check if either the left or right bottom part of the enemy is on a platform
         for platform in self.platforms:
-            if platform.rect.collidepoint(bottom_left) or platform.rect.collidepoint(bottom_right):
+            if platform.rect.collidepoint(bottom_left_with_buffer) or platform.rect.collidepoint(
+                    bottom_right_with_buffer):
                 on_platform = True
                 break
 

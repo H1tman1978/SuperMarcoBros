@@ -6,7 +6,8 @@ import os
 import sys
 
 import pygame
-from settings import CARDINAL, IMAGES_DIR, RED, WIDTH, HEIGHT, BACKGROUND_IMAGE
+
+from settings import BACKGROUND_IMAGE, CARDINAL, HEIGHT, IMAGES_DIR, WIDTH
 
 
 def show_start_menu(screen):
