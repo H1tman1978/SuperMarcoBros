@@ -4,10 +4,12 @@ Entry point for Super Marco Bros game using PyGame.
 """
 
 import sys
+
 import pygame
-from menu import show_start_menu
-from settings import BACKGROUND_IMAGE, FPS, HEIGHT, WIDTH
+
 from camera import Camera
+from menu import show_start_menu
+from settings import FPS, HEIGHT, WIDTH
 from src.animations import luca_animations, marco_animations
 from src.enemy import Enemy
 from src.item import Item
