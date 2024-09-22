@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
         """
         super().__init__()
         self.frames = frames  # List of animation frames
-        self.image = self.frames[0]  # Set the initial image to the first frame
+        self.image = self.frames['idle'][0]  # Set the initial image to the first frame
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -42,10 +42,17 @@ class Enemy(pygame.sprite.Sprite):
             self.last_updated = now
             self.current_frame += 1
 
-            if self.current_frame >= len(self.frames):
+            if self.speed > 0:  # check if speed is greater than 0
+                animation_key = 'walk_right'
+            elif self.speed < 0:  # check if speed is lesser than 0
+                animation_key = 'walk_left'
+            else:
+                animation_key = 'idle'
+
+            if self.current_frame >= len(self.frames[animation_key]):
                 self.current_frame = 0  # Loop back to the first frame
 
-            self.image = self.frames[self.current_frame]  # Update to the current frame
+            self.image = self.frames[animation_key][self.current_frame]  # Update to the current frame
 
     def check_platform_edges(self):
         """Reverse direction if the enemy reaches the edge of a platform."""

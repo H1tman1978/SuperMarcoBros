@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite):
 
         # Animation frames (e.g., walk_left, walk_right, idle, jump)
         self.frames = frames
-        self.image = self.frames['idle'][0]  # Default to idle right frame
+        self.image = self.frames['idle'][0]
         self.rect = self.image.get_rect()
 
         # Set player's starting position
@@ -65,13 +65,13 @@ class Player(pygame.sprite.Sprite):
             self.current_animation = 'walk_right'
         else:
             self.velocity_x = 0
-            self.current_animation = 'idle_right' if self.velocity_x >= 0 else 'idle_left'
+            self.current_animation = 'idle'
 
         # Jumping (Space or W key)
         if (keys[pygame.K_SPACE] or keys[pygame.K_w]) and not self.is_jumping:
             self.velocity_y = -10
             self.is_jumping = True
-            self.current_animation = 'jump_right' if self.velocity_x >= 0 else 'jump_left'
+            self.current_animation = 'jump'
 
         # Reset controls after 5 seconds
         if self.controls_reversed and pygame.time.get_ticks() > self.reverse_timer:

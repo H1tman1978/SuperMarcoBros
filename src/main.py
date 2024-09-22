@@ -3,10 +3,17 @@ main.py
 Entry point for Super Marco Bros game using PyGame.
 """
 
-import pygame
 import sys
-from settings import BACKGROUND_IMAGE, WIDTH, HEIGHT, FPS, SKY_BLUE, SPRITESHEETS_LIST
-from sprite_loader import load_sprites_from_xml
+import pygame
+from menu import show_start_menu
+from settings import BACKGROUND_IMAGE, FPS, HEIGHT, WIDTH
+from src.animations import luca_animations, marco_animations
+from src.enemy import Enemy
+from src.item import Item
+from src.level_maps import level1_map
+from src.platform_blocks import Platform
+from src.player import Player
+from src.sprite_loader import sprites
 
 # Initialize PyGame
 pygame.init()
@@ -14,29 +21,6 @@ pygame.init()
 # Set up the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Super Marco Bros")
-
-# Load background image
-background = pygame.image.load(BACKGROUND_IMAGE).convert()
-
-# Calculate the blit position to align the bottom-left of the image with the bottom-left of the screen
-background_x = 0  # No shift on the x-axis
-background_y = HEIGHT - background.get_height()  # Align bottom of the image with the bottom of the screen
-
-# Load spritesheet images
-sprites = {}
-for sheet in SPRITESHEETS_LIST:
-    image_path = sheet['image']
-    xml_path = sheet['xml']
-
-    # Load the sprite sheet image
-    print(image_path, xml_path)
-    spritesheet_image = pygame.image.load(image_path).convert_alpha()
-
-    # Load sprites from the corresponding XML file
-    sprite_data = load_sprites_from_xml(xml_path, spritesheet_image)
-
-    # Store the loaded sprite data in the main sprites dictionary
-    sprites.update(sprite_data)
 
 # Set up the game clock
 clock = pygame.time.Clock()
@@ -47,12 +31,58 @@ enemies = pygame.sprite.Group()
 items = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 
-# Placeholder for future object creation based on level map
+
+def load_level(player_selection, level_data, sprites, platforms, enemies, items, all_sprites):
+    """Creates the level based on the provided map data."""
+
+    # Load background image
+    background_img = pygame.image.load(level_data['background_img']).convert()
+    player = None
+
+    # Loop through each row and column in the layout to create objects
+    for row_idx, row in enumerate(level_data['layout']):
+        for col_idx, char in enumerate(row.split(',')):
+            x = col_idx * 32  # Assuming each tile is 32x32 pixels
+            y = row_idx * 32
+
+            # Use match/case to handle the different characters
+            match char:
+                case 'p':
+                    platform_image = sprites.get('dirt')
+                    platform = Platform(x, y, 32, 32, platform_image)
+                    platforms.add(platform)
+                    all_sprites.add(platform)
+
+                case 'P':
+                    if player_selection == 'Marco':
+                        player = Player(marco_animations, x, y)
+                    else:
+                        player = Player(luca_animations, x, y)
+                    all_sprites.add(player)
+
+                case 'E':
+                    enemy_type = level_data['enemy_types'][char]
+                    if enemy_type == 'slime':
+                        from animations import slime_enemy_animations
+                        enemy = Enemy(slime_enemy_animations, x, y, 10, 50)
+                        enemies.add(enemy)
+                        all_sprites.add(enemy)
+
+                case 'i':
+                    item_type = level_data['item_types'][char]
+                    if item_type == 'bad_shroom':
+                        item = Item(sprites.get('mushroomBrown'), x, y, animated=False)
+                        items.add(item)
+                        all_sprites.add(item)
+
+                case _:
+                    pass
+
+    return background_img, player
 
 
-def check_collisions():
+def check_collisions(player):
     """Handle all collisions in the game."""
-    # Player-platform collision
     platform_collisions = pygame.sprite.spritecollide(player, platforms, False)
     if platform_collisions:
         if player.velocity_y > 0:  # If the player is falling
@@ -60,38 +90,50 @@ def check_collisions():
             player.velocity_y = 0
             player.is_jumping = False
 
-    # Player-enemy collision
     enemy_collision = pygame.sprite.spritecollide(player, enemies, False)
     if enemy_collision:
-        if player.velocity_y > 0:  # Player is falling (jumping on enemy)
+        if player.velocity_y > 0:
             enemy_collision[0].kill()  # Defeat enemy
         else:
-            print("Player hit by enemy!")  # Placeholder for player damage
+            print("Player hit by enemy!")
 
-    # Player-item collision (bad shroom)
     item_collision = pygame.sprite.spritecollide(player, items, True)
     if item_collision:
-        print("Bad shroom collected!")  # Placeholder for bad shroom effect
-        player.reverse_controls()  # Reverse controls for the player
+        print("Bad shroom collected!")
+        player.reverse_controls()
 
 
 def main():
     """Main game loop."""
-    running = True
-    while running:
+    show_menu = True
+    selected_character = ''
+    game_running = True
+
+    # Load level once after character selection
+    background_img = None
+    player = None
+
+    while game_running:
+        if show_menu:
+            selected_character = show_start_menu(screen)
+            if selected_character is not None:
+                show_menu = False
+                background_img, player = load_level(selected_character, level1_map, sprites, platforms, enemies, items,
+                                                    all_sprites)
+
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                game_running = False
 
-        # Draw the background first
-        screen.blit(background, (background_x, background_y))
+        # Clear the screen by drawing the background first
+        screen.blit(background_img, (0, 0))
 
         # Update game state (player, enemies, etc.)
         all_sprites.update()
 
         # Check for collisions
-        check_collisions()
+        check_collisions(player)
 
         # Draw all sprites (player, etc.)
         all_sprites.draw(screen)

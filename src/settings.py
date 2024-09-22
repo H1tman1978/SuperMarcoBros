@@ -20,6 +20,7 @@ SKY_BLUE = (135, 206, 250)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+CARDINAL = (196, 40, 71)
 
 # Game settings
 GRAVITY = 0.8   # Gravity affects player jump and fall

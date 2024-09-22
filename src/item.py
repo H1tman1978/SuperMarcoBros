@@ -10,7 +10,7 @@ from settings import BLUE
 class Item(pygame.sprite.Sprite):
     """Base class for items in the game that can be animated."""
 
-    def __init__(self, frames, x, y, frame_duration=200):
+    def __init__(self, frames, x, y, animated=True, frame_duration=200):
         """
         :param frames: List of images representing the item's animation frames.
         :param x: Initial x position.
@@ -19,7 +19,10 @@ class Item(pygame.sprite.Sprite):
         """
         super().__init__()
         self.frames = frames  # List of frames (sprite images)
-        self.image = self.frames['idle'][0]  # Set the initial image to the first frame
+        if animated:
+            self.image = self.frames['idle'][0]  # Set the initial image to the first frame
+        else:
+            self.image = self.frames
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
